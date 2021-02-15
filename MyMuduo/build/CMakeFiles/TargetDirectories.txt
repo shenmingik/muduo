@@ -1,0 +1,5 @@
+/home/ik/桌面/MyMuduo/build/CMakeFiles/rebuild_cache.dir
+/home/ik/桌面/MyMuduo/build/CMakeFiles/edit_cache.dir
+/home/ik/桌面/MyMuduo/build/src/CMakeFiles/rebuild_cache.dir
+/home/ik/桌面/MyMuduo/build/src/CMakeFiles/mymuduo.dir
+/home/ik/桌面/MyMuduo/build/src/CMakeFiles/edit_cache.dir
