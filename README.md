@@ -2,14 +2,19 @@
 基于C++11的muduo网络库
 
 作者：shenmingik
+
 邮箱：2107810343@qq.com
+
 时间：2021/1/26 22:17
+
 开发环境：Ubuntu VS Code
+
 编译器：g++
+
 编程语言：C++
+
 源码链接：
 [微云链接](https://share.weiyun.com/TvmQb52d)
-[GitHub链接](https://github.com/harker-k/muduo)
 # 写在前面
 ## 项目编译问题
 项目编译时基于cmake的，在源码链接中有CMakeLists.txt文件，下载完之后直接点击那个编译即可。
@@ -58,16 +63,22 @@ reactor模型在实际设计中大致是有以下几个部分：
 -	reactor向其所对应的demultiplex去注册相应的connfd+事件，启动反应堆
 -	当demultiplex检测到connfd上有事件发生，就会返回相应事件
 -	reactor根据事件去调用eventhandler处理程序 
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210214113852361.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoZW5taW5neHVlSVQ=,size_16,color_FFFFFF,t_70)
+
 而上述的，是在一个reactor反应堆中所执行的大致流程，其在muduo代码中**包含关系**如下（椭圆圈起来的是类）：
 
 可以看到，EventLoop其实就是我们的reactor，其执行在一个Thread上，实现了one loop per thread的设计。
 每个EventLoop中，我们可以看到有一个Poller和很多的Channel，Poller在上图调用关系中，其实就是demultiplex（多路事件分发器）,而Channel对应的就是event（事件）
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210214120009308.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoZW5taW5neHVlSVQ=,size_16,color_FFFFFF,t_70)
+
 现在，我们大致明白了muduo每个reactor的设计，但是作为一个支持高并发的网络库，单线程 往往不是一个好的设计。
 
 muduo采用了和Nginx相似的操作，有一个main reactor通过accept组件负责处理新的客户端连接，并将它们分派给各个sub reactor，每个sub reactor则是负责一个连接的读写等工作。
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210214111718808.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoZW5taW5neHVlSVQ=,size_16,color_FFFFFF,t_70)
+
 # muduo各个类
 明白了muduo的细节之后，我们对muduo的剖析就更为容易。
 
@@ -129,6 +140,7 @@ muduo采用了和Nginx相似的操作，有一个main reactor通过accept组件�
 其中perpend-read之间是一个头部的标志位，read-write是可读数据，write-末尾是可写数据。
 
 应用将数据写入到网络库的Buffer缓冲区，然后Buffer缓冲区再写到TCP的缓冲区，最后再发送。
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210214125729501.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoZW5taW5neHVlSVQ=,size_16,color_FFFFFF,t_70)
 
 ```cpp
